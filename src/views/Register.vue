@@ -54,8 +54,8 @@ export default {
 	data() {
 		return {
 			email: '',
-			username: '',
 			password: '',
+			username: ''
 		}
 	},
 	computed: {
@@ -71,8 +71,7 @@ export default {
 					username: this.username,
 					password: this.password
 				})
-				.then(user => {
-					console.log('result from register action', user)
+				.then(() => {
 					this.$router.push({name: 'home'})
 				})
 		}

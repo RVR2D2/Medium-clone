@@ -1,35 +1,38 @@
 import authApi from '@/api/auth'
+import {setItem} from '@/helpers/persinstanceStorage'
 
 const state = {
   isSubmitting: false,
+  isLoggedIn: null,
   currentUser: null,
-  validationsError: null,
-  isLoggedIn: null
+  validationErrors: null
 }
 
 const mutations = {
   registerStart(state) {
     state.isSubmitting = true
-    state.validationsError = null
+    state.validationErrors = null
   },
   registerSuccess(state, payload) {
     state.isSubmitting = false
-    state.currentUser = payload
     state.isLoggedIn = true
+    state.currentUser = payload
   },
   registerFailure(state, payload) {
     state.isSubmitting = false
-    state.validationsError = payload
+    state.validationErrors = payload
   }
 }
 
 const actions = {
   register(context, credentials) {
     return new Promise(resolve => {
+      context.commit('registerStart')
       authApi
         .register(credentials)
         .then(response => {
           context.commit('registerSuccess', response.data.user)
+          setItem('accessToken', response.data.user.token)
           resolve(response.data.user)
         })
         .catch(result => {
