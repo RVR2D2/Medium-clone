@@ -19,22 +19,27 @@
 						}"
 							class="author"
 						>
-							{{article.author.username}}
+							{{ article.author.username }}
 						</router-link>
-						<span class="date">{{article.createdAt}}</span>
+						<span class="date">{{ article.createdAt }}</span>
 					</div>
 					<div class="pull-xs-right">
 						ADD TO FAVORITES
 					</div>
 				</div>
 				<router-link :to="{name: 'article', params: {slug: article.slug}}" class="preview-link">
-					<h1>{{article.title}}</h1>
-					<p>{{article.description}}</p>
+					<h1>{{ article.title }}</h1>
+					<p>{{ article.description }}</p>
 					<span>Read more...</span>
 					TAG LIST
 				</router-link>
 			</div>
-			PAGINATION
+			<McvPagination
+				:total="total"
+				:limit="limit"
+				:currentPage="currentPage"
+				:url="url"
+			/>
 		</div>
 	</div>
 </template>
@@ -42,13 +47,25 @@
 <script>
 import {mapState} from 'vuex'
 import {actionTypes} from '@/store/modules/feed'
+import McvPagination from '@/components/Pagination'
 
 export default {
 	name: "McvFeed",
+	components: {
+		McvPagination
+	},
 	props: {
 		apiUrl: {
 			type: String,
 			required: true
+		}
+	},
+	data() {
+		return {
+			total: 500,
+			limit: 10,
+			currentPage: 5,
+			url: '/'
 		}
 	},
 	computed: {
@@ -59,7 +76,7 @@ export default {
 		})
 	},
 	mounted() {
-	this.$store.dispatch(actionTypes.getFeed, {apiUrl: this.apiUrl})
+		this.$store.dispatch(actionTypes.getFeed, {apiUrl: this.apiUrl})
 	}
 }
 </script>
