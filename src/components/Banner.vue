@@ -1,7 +1,7 @@
 <template>
   <div class="banner">
     <div class="container">
-      <h1>Medium Clone</h1>
+      <h1>Medium clone</h1>
       <p>A place to share knowledge</p>
     </div>
   </div>
@@ -9,6 +9,6 @@
 
 <script>
 export default {
-  name: "McvBanner"
-};
+  name: 'McvBanner'
+}
 </script>

@@ -1,20 +1,22 @@
 <template>
-	<div>
-		<McvTopBar />
-		<router-view></router-view>
-	</div>
+  <div id="app">
+    <mcv-topbar />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import McvTopBar from '@/components/TopBar'
+import McvTopbar from '@/components/Topbar.vue'
 import {actionTypes} from '@/store/modules/auth'
 
 export default {
-	components: {
-		McvTopBar
-	},
-	mounted() {
-	this.$store.dispatch(actionTypes.getCurrentUser)
-	}
+  name: 'App',
+  components: {
+    McvTopbar
+  },
+  mounted() {
+    this.$store.dispatch(actionTypes.getCurrentUser)
+  }
 }
 </script>
+

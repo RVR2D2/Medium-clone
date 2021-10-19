@@ -1,7 +1,8 @@
 <template>
-  <div class="feed">
-    <McvLoading v-if="isLoading" />
-    <McvError v-if="error" />
+  <div>
+    <mcv-loading v-if="isLoading" />
+    <mcv-error-message v-if="error" />
+
     <div v-if="feed">
       <div
         class="article-preview"
@@ -10,31 +11,25 @@
       >
         <div class="article-meta">
           <router-link
-            :to="{
-              name: 'userProfile',
-              params: { slug: article.author.username }
-            }"
+            :to="{name: 'userProfile', params: {slug: article.author.username}}"
           >
-            <img :src="article.author.image" alt="user" />
+            <img :src="article.author.image" />
           </router-link>
           <div class="info">
             <router-link
               :to="{
                 name: 'userProfile',
-                params: { slug: article.author.username }
+                params: {slug: article.author.username}
               }"
-              class="author"
             >
               {{ article.author.username }}
             </router-link>
             <span class="date">{{ article.createdAt }}</span>
           </div>
-          <div class="pull-xs-right">
-            ADD TO FAVORITES
-          </div>
+          <div class="pull-xs-right">ADD TO FAVORITES</div>
         </div>
         <router-link
-          :to="{ name: 'article', params: { slug: article.slug } }"
+          :to="{name: 'article', params: {slug: article.slug}}"
           class="preview-link"
         >
           <h1>{{ article.title }}</h1>
@@ -43,31 +38,32 @@
           TAG LIST
         </router-link>
       </div>
-      <McvPagination
+      <mcv-pagination
         :total="feed.articlesCount"
         :limit="limit"
-        :currentPage="currentPage"
         :url="baseUrl"
-      />
+        :current-page="currentPage"
+      ></mcv-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { actionTypes } from "@/store/modules/feed";
-import McvPagination from "@/components/Pagination";
-import { limit } from "@/helpers/vars";
-import { stringify, parseUrl } from "query-string";
-import McvLoading from "@/components/Loading";
-import McvError from "@/components/Error";
+import {mapState} from 'vuex'
+import {stringify, parseUrl} from 'query-string'
+
+import {actionTypes} from '@/store/modules/feed'
+import McvPagination from '@/components/Pagination'
+import {limit} from '@/helpers/vars'
+import McvLoading from '@/components/Loading'
+import McvErrorMessage from '@/components/ErrorMessage'
 
 export default {
-  name: "McvFeed",
+  name: 'McvFeed',
   components: {
     McvPagination,
     McvLoading,
-    McvError
+    McvErrorMessage
   },
   props: {
     apiUrl: {
@@ -75,54 +71,44 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      limit,
-      url: "/"
-    };
-  },
   computed: {
     ...mapState({
       isLoading: state => state.feed.isLoading,
       feed: state => state.feed.data,
       error: state => state.feed.error
     }),
-    currentPage() {
-      return Number(this.$route.query.page || "1  ");
+    limit() {
+      return limit
     },
     baseUrl() {
-      return this.$route.path;
+      return this.$route.path
+    },
+    currentPage() {
+      return Number(this.$route.query.page || '1')
     },
     offset() {
-      return this.currentPage * limit - limit;
+      return this.currentPage * limit - limit
     }
   },
   watch: {
     currentPage() {
-      this.fetchFeed();
+      this.fetchFeed()
     }
   },
   mounted() {
-    this.fetchFeed();
+    this.fetchFeed()
   },
   methods: {
     fetchFeed() {
-      const parsedUrl = parseUrl(this.apiUrl);
+      const parsedUrl = parseUrl(this.apiUrl)
       const stringifiedParams = stringify({
         limit,
         offset: this.offset,
         ...parsedUrl.query
-      });
-      const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`;
-      this.$store.dispatch(actionTypes.getFeed, { apiUrl: apiUrlWithParams });
+      })
+      const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`
+      this.$store.dispatch(actionTypes.getFeed, {apiUrl: apiUrlWithParams})
     }
   }
-};
-</script>
-
-<style scoped>
-.feed__loading {
-  display: flex;
-  justify-content: center;
 }
-</style>
+</script>
